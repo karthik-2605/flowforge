@@ -28,3 +28,7 @@ const PORT = process.env.PORT || 4000;
 app.listen(PORT,()=>{
     console.log(`Server running on ${PORT}`);
 })
+
+require('./workers/job.worker');
+
+console.log('Worker started');

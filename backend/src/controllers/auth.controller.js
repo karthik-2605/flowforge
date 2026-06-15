@@ -1,16 +1,15 @@
 const authService =
     require('../services/auth.service');
+const { success, error } = require('../utilities/responseHelper');
 
 async function register(req, res) {
   try {
-    const user =
+    const result =
       await authService.register(req.body);
 
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(400).json({
-      error: error.message,
-    });
+    return success(res, result, 201);
+  } catch (err) {
+    return error(res, err.message, 400);
   }
 }
 
@@ -19,11 +18,9 @@ async function login(req, res) {
     const result =
       await authService.login(req.body);
 
-    res.json(result);
-  } catch (error) {
-    res.status(401).json({
-      error: error.message,
-    });
+    return success(res, result, 200);
+  } catch (err) {
+    return error(res, err.message, 401);
   }
 }
 

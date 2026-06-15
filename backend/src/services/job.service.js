@@ -1,10 +1,27 @@
 const jobRepository = require("../repositories/job.repository");
+const { jobQueue } = require("../scheduler/queue");
 
 async function createJob(userId, data) {
-  return jobRepository.create({
+  // 1. Save job in PostgreSQL
+  const job = await jobRepository.create({
     userId,
     ...data,
   });
+
+  // 2. Add job to BullMQ queue
+  await jobQueue.add(
+    `${job.job_type}:${job.id}`,
+    {
+      jobId: job.id,
+      jobType: job.job_type,
+      payload: job.payload,
+    },
+    {
+      jobId: `flowforge-${job.id}`,
+    }
+  );
+
+  return job;
 }
 
 async function getJobs(userId, filters) {
