@@ -1,5 +1,9 @@
 const jobRepository = require("../repositories/job.repository");
-const { jobQueue } = require("../scheduler/queue");
+const {
+  scheduleJob,
+  pauseJob: pauseScheduledJob,
+  resumeJob: resumeScheduledJob,
+} = require("../scheduler/scheduler");
 
 async function createJob(userId, data) {
   // 1. Save job in PostgreSQL
@@ -9,17 +13,19 @@ async function createJob(userId, data) {
   });
 
   // 2. Add job to BullMQ queue
-  await jobQueue.add(
-    `${job.job_type}:${job.id}`,
-    {
-      jobId: job.id,
-      jobType: job.job_type,
-      payload: job.payload,
-    },
-    {
-      jobId: `flowforge-${job.id}`,
-    }
-  );
+  // await jobQueue.add(
+  //   `${job.job_type}:${job.id}`,
+  //   {
+  //     jobId: job.id,
+  //     jobType: job.job_type,
+  //     payload: job.payload,
+  //   },
+  //   {
+  //     jobId: `flowforge-${job.id}`,
+  //   }
+  // );
+
+  await scheduleJob(job);
 
   return job;
 }
@@ -71,7 +77,9 @@ async function pauseJob(
   userId,
   jobId
 ) {
-  await getJobById(userId, jobId);
+  const job = await getJobById(userId, jobId);
+
+  await pauseScheduledJob(job);
 
   return jobRepository.updateStatus(
     jobId,
@@ -85,10 +93,11 @@ async function resumeJob(
 ) {
   await getJobById(userId, jobId);
 
-  return jobRepository.updateStatus(
-    jobId,
-    "active"
-  );
+  const job = await jobRepository.updateStatus(jobId,"active");
+
+  await resumeScheduledJob(job);
+
+  return job;
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-CREATE TABLE executions (
+CREATE TABLE IF NOT EXISTS executions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
     job_id UUID NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
@@ -18,8 +18,8 @@ CREATE TABLE executions (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE INDEX idx_executions_job_id
+CREATE INDEX IF NOT EXISTS idx_executions_job_id
 ON executions(job_id);
 
-CREATE INDEX idx_executions_status
+CREATE INDEX IF NOT EXISTS idx_executions_status
 ON executions(status);
