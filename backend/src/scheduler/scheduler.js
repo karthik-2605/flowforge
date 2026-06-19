@@ -3,7 +3,7 @@ const jobRepo = require('../repositories/job.repository');
 
 async function scheduleJob(job) {
   const options = {
-    jobId: `flowforge:${job.id}`,
+    jobId: `flowforge-${job.id}`,
   };
 
   if (job.cron_expression) {
@@ -17,7 +17,7 @@ async function scheduleJob(job) {
   }
 
   await jobQueue.add(
-    `${job.job_type}:${job.id}`,
+    `${job.job_type}-${job.id}`,
     {
       jobId: job.id,
       jobType: job.job_type,
