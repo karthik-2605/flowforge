@@ -48,6 +48,32 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.post('/:executionId/retry', async (req, res) => {
+  try {
+    const result = await jobService.retryExecution(
+      req.user.userId,
+      req.params.executionId
+    );
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+
+    if (
+      err.message === 'Execution not found' ||
+      err.message === 'Job not found'
+    ) {
+      return res.status(404).json({ error: err.message });
+    }
+
+    if (err.message === 'Forbidden') {
+      return res.status(403).json({ error: err.message });
+    }
+
+    res.status(400).json({ error: err.message });
+  }
+});
+
 router.get('/stats', async (req, res) => {
   try {
     const userId = req.user.userId;

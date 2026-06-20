@@ -1,5 +1,5 @@
 require('dotenv').config();
-console.log(process.env.DATABASE_URL);
+
 const fs = require('fs');
 const path = require('path');
 
@@ -13,10 +13,7 @@ async function runMigrations() {
   const files = fs.readdirSync(dir).sort();
 
   for (const file of files) {
-    const sql = fs.readFileSync(
-      path.join(dir, file),
-      'utf8'
-    );
+    const sql = fs.readFileSync(path.join(dir, file), 'utf8');
 
     console.log(`Running migration: ${file}`);
 
@@ -24,8 +21,16 @@ async function runMigrations() {
   }
 
   console.log('All migrations complete.');
-
-  process.exit(0);
 }
 
-runMigrations().catch(console.error);
+module.exports = { runMigrations };
+
+// Allow running directly: `node src/db/migrate.js`
+if (require.main === module) {
+  runMigrations()
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
+}

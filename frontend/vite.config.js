@@ -9,4 +9,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // The shadcn UI primitives emit Tailwind v4 `--spacing()` tokens that the
+    // default lightningcss minifier rejects, so skip CSS minification.
+    cssMinify: false,
+  },
 })

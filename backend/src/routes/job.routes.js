@@ -17,7 +17,29 @@ const {
   "../utilities/responseHelper"
 );
 
+const { getNextRuns } = require(
+  "../utilities/cronParser"
+);
+
 router.use(authMiddleware);
+
+// Preview the next runs of a cron expression.
+// Declared before "/:id" so it is not captured as an id.
+router.get("/cron-preview", (req, res) => {
+  const { expression } = req.query;
+
+  if (!expression) {
+    return error(res, "expression is required");
+  }
+
+  const result = getNextRuns(expression);
+
+  if (!result.valid) {
+    return error(res, result.error);
+  }
+
+  success(res, result);
+});
 
 router.post("/", async (req, res) => {
   try {

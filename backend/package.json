@@ -6,6 +6,9 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "migrate": "node src/db/migrate.js",
+    "lint": "eslint src --ext .js",
+    "lint:fix": "eslint src --ext .js --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +17,7 @@
   "type": "commonjs",
   "dependencies": {
     "axios": "^1.18.0",
+    "bcryptjs": "^3.0.3",
     "bullmq": "^5.78.1",
     "cors": "^2.8.6",
     "croner": "^10.0.1",
@@ -21,8 +25,11 @@
     "express": "^5.2.1",
     "helmet": "^8.2.0",
     "ioredis": "^5.11.1",
+    "joi": "^18.2.1",
+    "jsonwebtoken": "^9.0.3",
     "morgan": "^1.11.0",
-    "node-cron": "^4.2.1"
+    "node-cron": "^4.2.1",
+    "pg": "^8.21.0"
   },
   "devDependencies": {
     "eslint": "^10.4.1",

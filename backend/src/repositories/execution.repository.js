@@ -17,6 +17,17 @@ async function findByJobId(jobId, limit = 50) {
   return result.rows;
 }
 
+async function findById(id) {
+  const pool = getPool();
+
+  const result = await pool.query(
+    'SELECT * FROM executions WHERE id = $1',
+    [id]
+  );
+
+  return result.rows[0] || null;
+}
+
 async function getStats(userId) {
   const pool = getPool();
 
@@ -40,5 +51,6 @@ async function getStats(userId) {
 
 module.exports = {
   findByJobId,
+  findById,
   getStats,
 };

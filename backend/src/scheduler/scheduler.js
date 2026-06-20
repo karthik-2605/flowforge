@@ -1,5 +1,4 @@
 const { jobQueue } = require('./queue');
-const jobRepo = require('../repositories/job.repository');
 
 async function scheduleJob(job) {
   const options = {
@@ -22,6 +21,8 @@ async function scheduleJob(job) {
       jobId: job.id,
       jobType: job.job_type,
       payload: job.payload,
+      userId: job.user_id,
+      jobName: job.name,
     },
     options
   );
